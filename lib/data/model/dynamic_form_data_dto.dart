@@ -1,9 +1,9 @@
-class GetFormDataResponsModel {
+class DynamicFormDataDto {
   List<Fields>? fields;
 
-  GetFormDataResponsModel({this.fields});
+  DynamicFormDataDto({this.fields});
 
-  GetFormDataResponsModel.fromJson(Map<String, dynamic> json) {
+  DynamicFormDataDto.fromJson(Map<String, dynamic> json) {
     if (json['fields'] != null) {
       fields = <Fields>[];
       json['fields'].forEach((v) {
