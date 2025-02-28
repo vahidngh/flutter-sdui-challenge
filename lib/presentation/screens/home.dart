@@ -1,5 +1,6 @@
 import 'package:dynamic_form_builder/core/constants/constants.dart';
 import 'package:dynamic_form_builder/data/model/dynamic_form_data_dto.dart';
+import 'package:dynamic_form_builder/presentation/widgets/custom_select_field.dart';
 import 'package:dynamic_form_builder/presentation/widgets/custom_text_area_input.dart';
 import 'package:dynamic_form_builder/presentation/widgets/custom_text_input.dart';
 import 'package:dynamic_form_builder/providers/form_provider.dart';
@@ -65,7 +66,7 @@ class _HomeState extends State<Home> {
         }
       case SELECT_FIELD_TYPE:
         {
-          return Text(field.name.toString());
+          return CustomSelectField(field: field);
         }
       case FILE_INPUT_FIELD_TYPE:
         {
