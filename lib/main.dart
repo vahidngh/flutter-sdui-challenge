@@ -1,9 +1,11 @@
-import 'package:dynamic_form_builder/home.dart';
+import 'package:dynamic_form_builder/presentation/screens/home.dart';
+import 'package:dynamic_form_builder/providers/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [ChangeNotifierProvider(create: (_) => FormProvider())], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -12,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Dynamic Form Builder',
       theme: ThemeData(
         fontFamily: 'Shabnam',
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -32,4 +34,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
