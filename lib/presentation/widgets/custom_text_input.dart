@@ -27,6 +27,7 @@ class CustomTextInput extends StatelessWidget {
             height: 5,
           ),
           TextFormField(
+            maxLength: 20,
             keyboardType: getKeyboardType(field.props!.type??"text"),
             inputFormatters: getInputFormatters(field.props!.type ?? "text"),
             style: parseTextStyle(context: context, props: field.props, style: field.style),
