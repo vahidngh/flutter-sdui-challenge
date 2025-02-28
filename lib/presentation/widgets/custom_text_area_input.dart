@@ -1,7 +1,9 @@
 import 'package:dynamic_form_builder/core/utils/edge_insets_helper.dart';
 import 'package:dynamic_form_builder/core/utils/text_style_helper.dart';
 import 'package:dynamic_form_builder/data/model/dynamic_form_data_dto.dart';
+import 'package:dynamic_form_builder/providers/form_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CustomTextAreaInput extends StatelessWidget {
   final Fields field;
@@ -35,15 +37,22 @@ class CustomTextAreaInput extends StatelessWidget {
               hintStyle: parseTextStyle(context: context, props: field.props, style: field.style),
             ),
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'این فیلد الزامیست';
+            validator: _validateInput,
+            onChanged: (value){
+              if(_validateInput(value)==null) {
+                Provider.of<FormProvider>(context, listen: false).updateField(field.name??"", value);
               }
-              return null; // Valid
             },
           ),
         ],
       ),
-    );;
+    );
+  }
+
+  String? _validateInput(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'این فیلد الزامیست';
+    }
+    return null;
   }
 }

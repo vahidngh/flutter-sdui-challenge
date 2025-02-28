@@ -3,8 +3,9 @@ import 'package:dynamic_form_builder/core/utils/common.dart';
 import 'package:dynamic_form_builder/core/utils/edge_insets_helper.dart';
 import 'package:dynamic_form_builder/core/utils/text_style_helper.dart';
 import 'package:dynamic_form_builder/data/model/dynamic_form_data_dto.dart';
+import 'package:dynamic_form_builder/providers/form_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class CustomTextInput extends StatelessWidget {
   final Fields field;
@@ -38,18 +39,25 @@ class CustomTextInput extends StatelessWidget {
               hintStyle: parseTextStyle(context: context, props: field.props, style: field.style),
             ),
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'این فیلد الزامیست';
+            validator: _validateInput,
+            onChanged: (value){
+              if(_validateInput(value)==null) {
+                Provider.of<FormProvider>(context, listen: false).updateField(field.name??"", value);
               }
-              if (field.props!.type==INPUT_NUMBER_PROP_TYPE && double.tryParse(value) == null) {
-                return 'عدد نامعتبر';
-              }
-              return null; // Valid
             },
           ),
         ],
       ),
     );
+  }
+
+  String? _validateInput(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'این فیلد الزامیست';
+    }
+    if (field.props!.type == INPUT_NUMBER_PROP_TYPE && double.tryParse(value) == null) {
+      return 'عدد نامعتبر';
+    }
+    return null;
   }
 }

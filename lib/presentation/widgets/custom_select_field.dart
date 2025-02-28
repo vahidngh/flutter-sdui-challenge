@@ -1,7 +1,9 @@
 import 'package:dynamic_form_builder/core/utils/edge_insets_helper.dart';
 import 'package:dynamic_form_builder/core/utils/text_style_helper.dart';
 import 'package:dynamic_form_builder/data/model/dynamic_form_data_dto.dart';
+import 'package:dynamic_form_builder/providers/form_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CustomSelectField extends StatefulWidget {
   final Fields field;
@@ -40,6 +42,9 @@ class _CustomSelectFieldState extends State<CustomSelectField> {
               setState(() {
                 _selectedValue = newValue;
               });
+              if(_validateInput(newValue)==null) {
+                Provider.of<FormProvider>(context, listen: false).updateField(widget.field.name??"", newValue);
+              }
             },
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -47,15 +52,19 @@ class _CustomSelectFieldState extends State<CustomSelectField> {
                 borderSide: BorderSide(color: Colors.deepPurple, width: 2.0),
               ),
             ),
-            validator: (value) {
-              if (value == null) {
-                return 'لطفا یک گزینه را انتخاب کنید';
-              }
-              return null;
-            },
+            validator: _validateInput,
           ),
         ],
       ),
     );
   }
+
+  String? _validateInput(String? value) {
+    if (value == null) {
+      return 'لطفا یک گزینه را انتخاب کنید';
+    }
+    return null;
+  }
+
+
 }

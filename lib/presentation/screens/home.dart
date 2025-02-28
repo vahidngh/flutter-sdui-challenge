@@ -5,6 +5,7 @@ import 'package:dynamic_form_builder/presentation/widgets/custom_select_field.da
 import 'package:dynamic_form_builder/presentation/widgets/custom_text_area_input.dart';
 import 'package:dynamic_form_builder/presentation/widgets/custom_text_input.dart';
 import 'package:dynamic_form_builder/providers/form_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -42,13 +45,31 @@ class _HomeState extends State<Home> {
           }
 
           final formData = formProvider.dynamicFormDataDto!;
-          return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
-            itemCount: formData.fields!.length,
-            itemBuilder: (context, index) {
-              final field = formData.fields![index];
-              return _buildFormField(field);
-            },
+          return Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: formData.fields!.length,
+                    itemBuilder: (context, index) {
+                      final field = formData.fields![index];
+                      return _buildFormField(field);
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                      height: 40,
+                      child: FilledButton(onPressed: (){
+                        _submitForm();
+                      }, child: Text("ثبت اطلاعات"))),
+                )
+              ],
+            ),
           );
         },
       ),
@@ -79,5 +100,39 @@ class _HomeState extends State<Home> {
           return const SizedBox();
         }
     }
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('اطلاعات با موفقیت ثبت شدند.')),
+      );
+      var collectedData = Provider.of<FormProvider>(context, listen: false).formData;
+      showMessageDialog(context,collectedData.toString());
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('لطفا فرم را تکمیل نمایید')),
+      );
+    }
+  }
+
+  void showMessageDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const SelectableText('اظلاعات ارسالی'),
+          content: Directionality(textDirection: TextDirection.ltr, child: Text(message)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('تایید'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

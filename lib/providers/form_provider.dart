@@ -8,9 +8,18 @@ class FormProvider extends ChangeNotifier {
 
   DynamicFormDataDto? _dynamicFormDataDto;
   bool _isLoading = false;
+  final Map<String, dynamic> _formData = {};
+
 
   DynamicFormDataDto? get dynamicFormDataDto => _dynamicFormDataDto;
   bool get isLoading => _isLoading;
+  Map<String, dynamic> get formData => _formData;
+
+
+  void updateField(String fieldName, dynamic value) {
+    _formData[fieldName] = value;
+    notifyListeners();
+  }
 
   Future<void> getFormData() async {
     _isLoading = true;

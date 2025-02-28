@@ -1,12 +1,13 @@
 import 'package:dynamic_form_builder/core/constants/constants.dart';
+import 'package:dynamic_form_builder/core/utils/common.dart';
 import 'package:dynamic_form_builder/core/utils/edge_insets_helper.dart';
 import 'package:dynamic_form_builder/core/utils/text_style_helper.dart';
 import 'package:dynamic_form_builder/data/model/dynamic_form_data_dto.dart';
 import 'package:dynamic_form_builder/presentation/widgets/custom_thumbnail.dart';
+import 'package:dynamic_form_builder/providers/form_provider.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 
 
 class CustomFileInput extends StatefulWidget {
@@ -20,6 +21,7 @@ class CustomFileInput extends StatefulWidget {
 
 class _CustomFileInputState extends State<CustomFileInput> {
   List<PlatformFile> files = [];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,10 +49,9 @@ class _CustomFileInputState extends State<CustomFileInput> {
                 alignment: Alignment.centerRight,
                 child: FilledButton(
                   onPressed: () async {
-                    files = await _pickFile(allowMultiple:widget.field.props!.multiple ?? false,fileType:widget.field.props!.accept!);
-                    print("toString: " + files.length.toString());
-
+                    files = await _pickFile(allowMultiple: widget.field.props!.multiple ?? false, fileType: widget.field.props!.accept!);
                     setState(() {});
+                    updateProvider(files);
                   },
                   child: Text("انتخاب تصاویر"),
                 ),
@@ -59,16 +60,16 @@ class _CustomFileInputState extends State<CustomFileInput> {
                   child: Wrap(
                     children: List.generate(
                         files.length,
-                      (index) => CustomThumbnail(
-                          onPress: () {
-                            setState(() {
-                              files.removeAt(index);
-                            });
-
-                          },
-                          bytes: files[index].bytes,
-                          name: files[index].name,
-                      )
+                            (index) =>
+                            CustomThumbnail(
+                              onPress: () {
+                                setState(() {
+                                  files.removeAt(index);
+                                });
+                              },
+                              bytes: files[index].bytes,
+                              name: files[index].name,
+                            )
                     ),
                   )),
             ],
@@ -80,75 +81,37 @@ class _CustomFileInputState extends State<CustomFileInput> {
 
   Future<List<PlatformFile>> _pickFile({required bool allowMultiple, required String fileType}) async {
     List<PlatformFile> result = [];
-    result = await _pickFiles(allowMultiple: allowMultiple,fileType: _getFileType(fileType));
+    result = await _pickFiles(allowMultiple: allowMultiple, fileType: getFileType(fileType));
     return result;
-
-
-    // List<File> files = [];
-    // File file;
-    // if (result != null) {
-    //   if(multiple){
-    //   file = File(result.files.single.path!);}else{
-    //     files = result.paths.map((path) => File(path!)).toList();
-    //   }
-    //
-    // } else {
-    //   // User canceled the picker
-    // }
-    // final ImagePicker picker = ImagePicker();
-    // List<XFile> images = [];
-    //
-    // if (multiple) {
-    //   images = await picker.pickMultiImage();
-    //   for (var item in images) {
-    //     print(item.name);
-    //   }
-    // } else {
-    //   images[0] = (await picker.pickImage(source: ImageSource.gallery))!;
-    //   print(images[0].name);
-    // }
-    // return images;
   }
 
-  FileType _getFileType(String fileType){
-    switch(fileType){
-      case IMAGES_FILE_TYPE : return FileType.image;
-      default: return FileType.any;
+
+  Future<List<PlatformFile>> _pickFiles({bool allowMultiple = false, FileType fileType = FileType.any}) async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: allowMultiple,
+        type: fileType,
+      );
+
+      if (result != null) {
+        return result.files;
+      }
+      return [];
+    } catch (e) {
+      print("Error picking files: $e");
+      return [];
+    }
+
+  }
+
+  void updateProvider(List<PlatformFile> files) {
+    if (files.isNotEmpty) {
+      var mapOfFiles = convertFilesToMap(files);
+      print("mapOfFiles::: "+mapOfFiles.toString());
+      Provider.of<FormProvider>(context, listen: false).updateField(widget.field.name ?? "", mapOfFiles);
     }
   }
+
 }
 
-Future<List<PlatformFile>> _pickFiles({bool allowMultiple = false, FileType fileType = FileType.any}) async {
-  try {
-    // Pick files
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: allowMultiple,
-      type: fileType,
-    );
 
-    if (result != null) {
-      return result.files;
-    }
-    return [];
-  } catch (e) {
-    print("Error picking files: $e");
-    return [];
-  }
-}
-
-// Handle file data for web/mobile
-void _handleFiles(List<PlatformFile> files) {
-  for (PlatformFile file in files) {
-    if (kIsWeb) {
-      // Web: Use bytes directly
-      final bytes = file.bytes;
-      final fileName = file.name;
-      print("Web file: $fileName (${bytes?.length} bytes)");
-    } else {
-      // Mobile: Use File from path
-      final path = file.path;
-      final fileName = file.name;
-      print("Mobile file: $fileName (path: $path)");
-    }
-  }
-}
