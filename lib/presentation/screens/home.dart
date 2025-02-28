@@ -1,5 +1,6 @@
 import 'package:dynamic_form_builder/core/constants/constants.dart';
 import 'package:dynamic_form_builder/data/model/dynamic_form_data_dto.dart';
+import 'package:dynamic_form_builder/presentation/widgets/custom_text_area_input.dart';
 import 'package:dynamic_form_builder/presentation/widgets/custom_text_input.dart';
 import 'package:dynamic_form_builder/providers/form_provider.dart';
 import 'package:flutter/material.dart';
@@ -60,11 +61,10 @@ class _HomeState extends State<Home> {
         }
       case TEXT_AREA_FIELD_TYPE:
         {
-          return Text(field.name.toString());
+          return CustomTextAreaInput(field: field);
         }
       case SELECT_FIELD_TYPE:
         {
-          String? selectedValue;
           return Text(field.name.toString());
         }
       case FILE_INPUT_FIELD_TYPE:

@@ -1,0 +1,49 @@
+import 'package:dynamic_form_builder/core/utils/edge_insets_helper.dart';
+import 'package:dynamic_form_builder/core/utils/text_style_helper.dart';
+import 'package:dynamic_form_builder/data/model/dynamic_form_data_dto.dart';
+import 'package:flutter/material.dart';
+
+class CustomTextAreaInput extends StatelessWidget {
+  final Fields field;
+  const CustomTextAreaInput({super.key, required this.field});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsetsHelper().parse(field.style!.margin!),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            field.label ?? "",
+            style: parseTextStyle(context: context, props: field.props, style: field.style),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          TextFormField(
+            minLines: field.props!.rows ?? 1,
+            maxLines: field.props!.rows ?? 1,
+            maxLength: (field.props!.rows??1)*(field.props!.cols??50),
+            style: parseTextStyle(context: context, props: field.props, style: field.style),
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.deepPurple, width: 2.0),
+              ),
+              hintText: field.props!.placeholder,
+              hintStyle: parseTextStyle(context: context, props: field.props, style: field.style),
+            ),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'این فیلد الزامیست';
+              }
+              return null; // Valid
+            },
+          ),
+        ],
+      ),
+    );;
+  }
+}
