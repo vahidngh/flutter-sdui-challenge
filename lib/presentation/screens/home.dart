@@ -1,4 +1,6 @@
+import 'package:dynamic_form_builder/core/constants/constants.dart';
 import 'package:dynamic_form_builder/data/model/dynamic_form_data_dto.dart';
+import 'package:dynamic_form_builder/presentation/widgets/custom_text_input.dart';
 import 'package:dynamic_form_builder/providers/form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +13,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   @override
   void initState() {
     super.initState();
@@ -52,6 +53,29 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildFormField(Fields field) {
-    return Text(field.name.toString());
+    switch (field.type) {
+      case TEXT_INPUT_FIELD_TYPE:
+        {
+          return CustomTextInput(field: field);
+        }
+      case TEXT_AREA_FIELD_TYPE:
+        {
+          return Text(field.name.toString());
+        }
+      case SELECT_FIELD_TYPE:
+        {
+          String? selectedValue;
+          return Text(field.name.toString());
+        }
+      case FILE_INPUT_FIELD_TYPE:
+        {
+          return Text(field.name.toString());
+        }
+      default:
+        {
+          // In case of unknown input
+          return const SizedBox();
+        }
+    }
   }
 }
