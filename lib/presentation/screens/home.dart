@@ -1,5 +1,6 @@
 import 'package:dynamic_form_builder/core/constants/constants.dart';
 import 'package:dynamic_form_builder/data/model/dynamic_form_data_dto.dart';
+import 'package:dynamic_form_builder/presentation/widgets/custom_file_input.dart';
 import 'package:dynamic_form_builder/presentation/widgets/custom_select_field.dart';
 import 'package:dynamic_form_builder/presentation/widgets/custom_text_area_input.dart';
 import 'package:dynamic_form_builder/presentation/widgets/custom_text_input.dart';
@@ -28,7 +29,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dynamic Form Builder'),
+        title: const Text('فرم ساز آنلاین'),
       ),
       body: Consumer<FormProvider>(
         builder: (context, formProvider, child) {
@@ -70,7 +71,7 @@ class _HomeState extends State<Home> {
         }
       case FILE_INPUT_FIELD_TYPE:
         {
-          return Text(field.name.toString());
+          return CustomFileInput(field: field);
         }
       default:
         {

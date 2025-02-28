@@ -12,3 +12,5 @@ const String INPUT_TEXT_SMALL = "small";
 const String INPUT_TEXT_PROP_TYPE = "text";
 const String INPUT_NUMBER_PROP_TYPE = "number";
 
+const String IMAGES_FILE_TYPE = "image/*";
+
